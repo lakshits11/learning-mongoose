@@ -6,8 +6,16 @@ mongoose.connect("mongodb://localhost:27017/peopleDB", {
 });
 
 const peopleSchema = new mongoose.Schema({
-    name: String,
-    age: Number,
+    name: {
+        type: Number,
+        required: [true,"Please specify name!"],    // Second parameter is a message to be displayed when the required parameter is not entered.
+    },
+    age:{
+        type:Number,
+        required:true,
+        min:1,
+        max:100,
+    }
 });
 
 const People = mongoose.model("People", peopleSchema);
@@ -43,6 +51,11 @@ People.find((err, people) => {
     if (err) {
         console.log(err);
     } else {
-        console.log(people);
+        // When we have run all the app queries then we should close the connection.
+        mongoose.connection.close();
+
+        people.forEach((people) => {
+            console.log(people.name);
+        });
     }
 });
